@@ -24,7 +24,7 @@ class Budget:
                 else:
                     error = False
                     self.balance[category] += depositAmount
-                    print(f'%d Naira has Been added to {self.cat1} and now the balance is: %dN' % (depositAmount,
+                    print(f'%d Naira has Been added to {category} and now the balance is: %dN' % (depositAmount,
                                                                                                    self.balance[category]))
                     isvalopt = False
                     while isvalopt== False:
