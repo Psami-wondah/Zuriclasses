@@ -1,5 +1,9 @@
 Samuel = False
 class Budget:
+    """
+    Abeg I don try my best, I can't handle all the exceptions
+    why would someone want to deposit a negative number as an amount?
+    """
     def __init__(self, cat1, cat2, cat3):
         self.cat1 = cat1
         self.cat2 = cat2
@@ -15,21 +19,25 @@ class Budget:
         while error == True:
             try:
                 depositAmount = int(input('How much would you like to deposit? \n'))
-                error = False
-                self.balance[category] += depositAmount
-                print(f'%d Naira has Been added to {self.cat1} and now the balance is: %dN' % (depositAmount, self.balance[category]))
-                isvalopt = False
-                while isvalopt== False:
-                    selectedOption = input('Would you like to deposit into any other account? (1) Yes (2) No \n')
-                    if selectedOption == '1':
-                        isvalopt = True
-                        self.deposit()
-                    elif selectedOption== '2':
-                        isvalopt = True
-                        init()
-                    else:
-                        isvalopt = False
-                        print('Wrong input, Try again')
+                if depositAmount <= 0:
+                    print('Invalid amount')
+                else:
+                    error = False
+                    self.balance[category] += depositAmount
+                    print(f'%d Naira has Been added to {self.cat1} and now the balance is: %dN' % (depositAmount,
+                                                                                                   self.balance[category]))
+                    isvalopt = False
+                    while isvalopt== False:
+                        selectedOption = input('Would you like to deposit into any other category? (1) Yes (2) No \n')
+                        if selectedOption == '1':
+                            isvalopt = True
+                            self.deposit()
+                        elif selectedOption== '2':
+                            isvalopt = True
+                            init()
+                        else:
+                            isvalopt = False
+                            print('Wrong input, Try again')
 
             except ValueError:
                 error = True
@@ -40,24 +48,28 @@ class Budget:
         while error == True:
             try:
                 withdrawalAmount = int(input('How much would you like to withdraw? \n'))
-                if withdrawalAmount <= self.balance[category]:
-                    print('Currently dispensing', withdrawalAmount, 'Naira')
-                    print('Please take your cash')
-                    self.balance[category] -= withdrawalAmount
+                if withdrawalAmount <=0:
+                    print('Invalid amount')
                 else:
-                    print('Sorry, you do not have enough funds')
-                isvalopt = False
-                while isvalopt == False:
-                    selectedOption = input('Would you like to withdraw from any other account? (1) Yes (2) No \n')
-                    if selectedOption == '1':
-                        isvalopt = True
-                        self.withdraw()
-                    elif selectedOption == '2':
-                        isvalopt = True
-                        init()
+                    if withdrawalAmount <= self.balance[category]:
+                        print('Currently dispensing', withdrawalAmount, 'Naira')
+                        print('Please take your cash')
+                        self.balance[category] -= withdrawalAmount
                     else:
-                        isvalopt = False
-                        print('Wrong input, Try again')
+                        print('Sorry, you do not have enough funds')
+                    error=False
+                    isvalopt = False
+                    while isvalopt == False:
+                        selectedOption = input('Would you like to withdraw from any other category? (1) Yes (2) No \n')
+                        if selectedOption == '1':
+                            isvalopt = True
+                            self.withdraw()
+                        elif selectedOption == '2':
+                            isvalopt = True
+                            init()
+                        else:
+                            isvalopt = False
+                            print('Wrong input, Try again')
             except ValueError:
                 error = True
                 print('Please enter integers only')
@@ -67,26 +79,29 @@ class Budget:
         while error == True:
             try:
                 transferAmount=int(input('Enter the amount you wish to transfer \n'))
-
-                if transferAmount <= self.balance[first]:
-                    self.balance[first] -= transferAmount
-                    self.balance[second] += transferAmount
-                    print(f'Transfer done and now the balance of {first} is: {self.balance[first]}N and \n {second} is '
-                          f'{self.balance[second]}N')
+                if transferAmount<=0:
+                    print('Invalid amount')
                 else:
-                    print('Sorry, you do not have enough funds.')
-                isvalopt = False
-                while isvalopt == False:
-                    selectedOption = input('Would you like to make any other transfer? ? (1) Yes (2) No \n')
-                    if selectedOption == '1':
-                        isvalopt = True
-                        self.transfer()
-                    elif selectedOption == '2':
-                        isvalopt = True
-                        init()
+                    if transferAmount <= self.balance[first]:
+                        self.balance[first] -= transferAmount
+                        self.balance[second] += transferAmount
+                        print(f'Transfer done and now the balance of {first} is: {self.balance[first]}N and \n {second} is '
+                              f'{self.balance[second]}N')
                     else:
-                        isvalopt = False
-                        print('Wrong input, Try again')
+                        print('Sorry, you do not have enough funds.')
+                    error= False
+                    isvalopt = False
+                    while isvalopt == False:
+                        selectedOption = input('Would you like to make any other transfer? ? (1) Yes (2) No \n')
+                        if selectedOption == '1':
+                            isvalopt = True
+                            self.transfer()
+                        elif selectedOption == '2':
+                            isvalopt = True
+                            init()
+                        else:
+                            isvalopt = False
+                            print('Wrong input, Try again')
             except ValueError:
                 error = True
                 print('Please enter integers only')
@@ -170,9 +185,20 @@ class Budget:
         selectedOption2= input(f'Please enter the category you wish to transfer to ({self.cat1} or {self.cat2}'
                                f' or {self.cat3}) \n')
         if selectedOption1 in self.balance and selectedOption2 in self.balance:
-            self.tranferOperation(selectedOption1, selectedOption2)
+            if selectedOption1 != selectedOption2:
+                self.tranferOperation(selectedOption1, selectedOption2)
+            else:
+                print("You can't transfer to the same category you are transferring from, please try again")
+                self.transfer()
+        elif selectedOption1 in self.balance and selectedOption2 not in self.balance:
+            print('The second category you entered does not exist, please try again')
+            self.transfer()
+        elif selectedOption1 not in self.balance and selectedOption2 in self.balance:
+            print('The first category you entered does not exist, please try again')
+            self.transfer()
+
         else:
-            print('One of the categories you entered does not exist, please try again')
+            print('The categories you entered do not exist, Please try again')
             self.transfer()
 
 
